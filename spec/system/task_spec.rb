@@ -58,7 +58,7 @@ RSpec.describe 'Task', type: :system do
 
   describe 'Task編集' do
     context '正常系' do
-      fit 'Taskを編集した場合、一覧画面で編集後の内容が表示されること' do
+      it 'Taskを編集した場合、一覧画面で編集後の内容が表示されること' do
         # FIXME: テストが失敗するので修正してください → 修正済
         visit edit_project_task_path(project, task)
         # Time.current 現在の時刻
@@ -66,7 +66,7 @@ RSpec.describe 'Task', type: :system do
         click_button 'Update Task'
         click_link 'Back'
         expect(current_path).to eq project_tasks_path(project)
-        # short_timeメソッドを使用
+        # short_timeメソッドを使用(ApplicationHelperをrails_helper.rbへinclude)
         expect(find('.task_list')).to have_content(short_time(Time.current))
       end
 
