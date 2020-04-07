@@ -82,9 +82,7 @@ RSpec.describe 'Task', type: :system do
     end
 
     context 'ステータス' do
-      before do
-        task_status_done
-      end
+      before { task_status_done }
       it '既にステータスが完了のタスクのステータスを変更した場合、Taskの完了日が更新されないこと' do
         # TODO: FactoryBotのtraitを利用してください → 修正済
         visit edit_project_task_path(project, task)
@@ -99,9 +97,7 @@ RSpec.describe 'Task', type: :system do
 
   describe 'Task削除' do
     # let(:task)の呼び出し
-    before do
-      task
-    end
+    before { task }
     context '正常系' do
       # FIXME: テストが失敗するので修正してください 修正済
       it 'Taskが削除されること' do
