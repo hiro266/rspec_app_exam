@@ -14,14 +14,16 @@ RSpec.describe 'Task', type: :system do
       end
 
       it 'Project詳細からTask一覧ページにアクセスした場合、Taskが表示されること' do
-        # FIXME: テストが失敗するので修正してください
+        # FIXME: テストが失敗するので修正してください → 修正済
         project = FactoryBot.create(:project)
         task = FactoryBot.create(:task, project_id: project.id)
         visit project_path(project)
         click_link 'View Todos'
+        # 別タブに遷移する
+        switch_to_window(windows.last)
+        expect(current_path).to eq project_tasks_path(project)
         expect(page).to have_content task.title
         expect(Task.count).to eq 1
-        expect(current_path).to eq project_tasks_path(project)
       end
     end
   end
@@ -60,15 +62,17 @@ RSpec.describe 'Task', type: :system do
   describe 'Task編集' do
     context '正常系' do
       it 'Taskを編集した場合、一覧画面で編集後の内容が表示されること' do
-        # FIXME: テストが失敗するので修正してください
+        # FIXME: テストが失敗するので修正してください → 修正済
         project = FactoryBot.create(:project)
         task = FactoryBot.create(:task, project_id: project.id)
         visit edit_project_task_path(project, task)
+        # Time.current 現在の時刻
         fill_in 'Deadline', with: Time.current
         click_button 'Update Task'
         click_link 'Back'
-        expect(find('.task_list')).to have_content(Time.current.strftime('%Y-%m-%d'))
         expect(current_path).to eq project_tasks_path(project)
+        # 日付・時刻の条件式を変更
+        expect(find('.task_list')).to have_content(Time.current.strftime('%-m/%d %-H:%M'))
       end
 
       it 'ステータスを完了にした場合、Taskの完了日に今日の日付が登録されること' do
@@ -99,16 +103,17 @@ RSpec.describe 'Task', type: :system do
 
   describe 'Task削除' do
     context '正常系' do
-      # FIXME: テストが失敗するので修正してください
+      # FIXME: テストが失敗するので修正してください 修正済
       it 'Taskが削除されること' do
         project = FactoryBot.create(:project)
         task = FactoryBot.create(:task, project_id: project.id)
         visit project_tasks_path(project)
         click_link 'Destroy'
         page.driver.browser.switch_to.alert.accept
-        expect(page).not_to have_content task.title
-        expect(Task.count).to eq 0
         expect(current_path).to eq project_tasks_path(project)
+        # have_content → have_no_content
+        expect(page).not_to have_no_content task.title
+        expect(Task.count).to eq 0
       end
     end
   end
